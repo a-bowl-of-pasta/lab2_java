@@ -1,24 +1,14 @@
 package LOGIC;
 
-
 public class deadline extends event implements completable {
     boolean completed;
+    // ===== inherited methods
+    public boolean isComplete() {return completed;}
+    public void complete(){completed = true;}
+    public String getName(){return eventName;}
+    public void setName(String name){eventName = name;}
 
-    @Override
-    public boolean isComplete() {
-        return false;
-    }
-
-    @Override
-    public void complete(){
-        completed = true;
-    }
-
-    @Override
-    public String getEventName(){
-        return eventName;
-    }
-
+    // ===== not inherited ====
     public int compareTo(event e){
         return this.eventTime.compareTo(e.getEventTime());
     }

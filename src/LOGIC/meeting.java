@@ -1,42 +1,35 @@
 package LOGIC;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.Duration;
 
 public class meeting extends event implements completable {
-
-    Date endOfMeeting;
+    // ==== variables
+    LocalDateTime endOfMeeting;
     String meetingLocation;
+    boolean completed;
     int lengthOfMeeting;
-
-    Date getEndTime(){return endOfMeeting;}
+    // ===== inherited methods =====
+    public boolean isComplete() {return completed;}
+    public void complete() {completed = true;}
+    public void setName(String name) {eventName = name; }
+    public String getName(){return eventName;}
+    // ======== not inherited =======
+    LocalDateTime getEndTime(){return endOfMeeting;}
     String getMeetingLocation(){return meetingLocation;}
-    int getDuration(){
+    void setEndOfMeeting(LocalDateTime endOfMeeting){this.endOfMeeting = endOfMeeting;}
+    void setMeetingLocation(String meetingLocation){this.meetingLocation = meetingLocation;}
 
-
-        return (eventTime - endOfMeeting);
+    int getDuration()
+    {
+        Duration duration = Duration.between(eventTime, endOfMeeting);
+        return ((int)duration.toMinutes());
     }
-
-    void setEndOfMeeting(Date endOfMeeting){
-        this.endOfMeeting = endOfMeeting;
-    }
-    void setMeetingLocation(String meetingLocation){
-        this.meetingLocation = meetingLocation;
-    }
-
-
-
-    @Override
-    public boolean isComplete() {
-        return false;
-    }
-
-    @Override
-    public void complete() {
-
-    }
-
-    @Override
-    String getEventName() {
-        return "";
+    // ====== constructor =======
+    meeting(){
+        endOfMeeting = null;
+        meetingLocation = null;
+        completed = false;
+        lengthOfMeeting = 0;
     }
 }
