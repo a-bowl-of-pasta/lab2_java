@@ -4,27 +4,42 @@ import java.time.LocalDateTime;
 import java.time.Duration;
 
 public class meeting extends event implements completable {
+
     // ==== variables
     LocalDateTime endOfMeeting;
     String meetingLocation;
     boolean completed;
     int lengthOfMeeting;
+
     // ===== inherited methods =====
+    // -------- getters
     public boolean isComplete() {return completed;}
+    public String getName(){return eventName;}
+    // -------- setters
     public void complete() {completed = true;}
     public void setName(String name) {eventName = name; }
-    public String getName(){return eventName;}
-    // ======== not inherited =======
-    LocalDateTime getEndTime(){return endOfMeeting;}
-    String getMeetingLocation(){return meetingLocation;}
-    void setEndOfMeeting(LocalDateTime endOfMeeting){this.endOfMeeting = endOfMeeting;}
-    void setMeetingLocation(String meetingLocation){this.meetingLocation = meetingLocation;}
 
-    int getDuration()
+    // ======== not inherited =======
+    // --------- getters
+    public LocalDateTime getEndTime(){return endOfMeeting;}
+    public String getMeetingLocation(){return meetingLocation;}
+    public int getDuration(){return lengthOfMeeting; }
+    // ------- setters
+    public void setEndOfMeeting(LocalDateTime eom){endOfMeeting = eom;}
+    public void setEndOfMeeting(String endOfMeet){ endOfMeeting = genDateTime(endOfMeet); }
+    public void setMeetingLocation(String Location){meetingLocation = Location;}
+    private void setMeetingLength(int duration){lengthOfMeeting = duration; }
+    public void setDuration(String howLong)
     {
-        Duration duration = Duration.between(eventTime, endOfMeeting);
-        return ((int)duration.toMinutes());
+        if(howLong.isBlank())
+        {
+            Duration duration = Duration.between(eventTime, endOfMeeting);
+             setMeetingLength((int)duration.toMinutes());
+        }else{
+            setMeetingLength(Integer.parseInt(howLong));
+        }
     }
+
     // ====== constructor =======
     meeting(){
         endOfMeeting = null;
