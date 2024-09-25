@@ -1,8 +1,10 @@
 import LOGIC.*;
+import org.w3c.dom.Text;
+
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 public class eventPanel extends JPanel {
 
@@ -11,6 +13,8 @@ public class eventPanel extends JPanel {
     JPanel display;
     meeting meat = null;
     deadline dead = null;
+    Border PanelBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
+    Border TextFieldBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
 
     public eventPanel(event e) {
         display = new JPanel();
@@ -29,7 +33,8 @@ public class eventPanel extends JPanel {
 
     void addInfo(String type, String name, LocalDateTime start, boolean completed)
     {
-        JTextField dispType = new JTextField(type + " event type");
+        JTextField dispType = new JTextField(type);
+        dispType.setBorder(TextFieldBorder);
         display.add(dispType, BorderLayout.NORTH);
 
         String theInformation = "- " + type + "\n- " + name + "\n";
@@ -38,6 +43,8 @@ public class eventPanel extends JPanel {
         JTextArea dispInf = new JTextArea();
         dispInf.setText(theInformation);
         display.add(dispInf, BorderLayout.CENTER);
+        dispInf.setEditable(false);
+        dispType.setEditable(false);
 
     }
     void addInfo(String type, String name,String location, LocalDateTime start, LocalDateTime end, String duration){
@@ -50,9 +57,15 @@ public class eventPanel extends JPanel {
         JTextArea dispInf = new JTextArea();
         dispInf.setText(theInformation);
         display.add(dispInf, BorderLayout.CENTER);
+
+        dispInf.setEditable(false);
+        dispType.setEditable(false);
     }
 
-    JPanel getDisplay(){return display;}
+    JPanel getDisplay(){
+        display.setBorder(PanelBorder);
+        return display;
+    }
 
     void updateUrgency(){
         // - EventPanel should set its background color according to the Urgency of the Event
