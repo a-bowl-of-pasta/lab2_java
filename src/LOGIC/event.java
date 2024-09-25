@@ -7,10 +7,18 @@ abstract public class event implements Comparable<event>{
     String eventName;
     LocalDateTime eventTime;
 
+    event(String name, String time){
+        eventName = name;
+        eventTime = genDateTime(time);
+    }
+    event()
+    {
+        eventName = null;
+        eventTime = null;
+    }
     // === abstract classes ===
     public abstract void setName(String name);  // set event name
     public abstract String getName();
-
     // === concrete classes ===
     public LocalDateTime getEventTime(){return eventTime; }
     public void setEventTime(LocalDateTime time){eventTime = time; } // set date time
@@ -24,7 +32,12 @@ abstract public class event implements Comparable<event>{
     // === implemented ===  method
     public int compareTo(event e){ return eventTime.compareTo(e.eventTime); }
 
-    //===== create time obj ====
+    //===== custom LocalDateTime parser ====
+    /*
+        I know the LocalDateTime.parse(string) method exists
+        but I made my own because I don't think the one for
+        the LocalDateTime class accounts for AM/PM, this one does
+     */
     public LocalDateTime genDateTime(String cta){
         String [] datingParts = cta.split(" "); // [" ##/##/### "] , [" ##:##AM "]
         int[]theDates = dateToInt(datingParts[0]);

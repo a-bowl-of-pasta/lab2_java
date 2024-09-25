@@ -2,6 +2,7 @@ package LOGIC;
 
 import java.time.LocalDateTime;
 import java.time.Duration;
+import java.time.format.DateTimeFormatter;
 
 public class meeting extends event implements completable {
 
@@ -34,17 +35,29 @@ public class meeting extends event implements completable {
         if(howLong.isBlank())
         {
             Duration duration = Duration.between(eventTime, endOfMeeting);
-             setMeetingLength((int)duration.toMinutes());
+            setMeetingLength((int)duration.toMinutes());
         }else{
             setMeetingLength(Integer.parseInt(howLong));
         }
     }
 
     // ====== constructor =======
-    meeting(){
+    public meeting(String name,String startTime,String endTime, String location)
+    {
+     eventName = name;
+     eventTime = genDateTime(startTime);
+     endOfMeeting = genDateTime(endTime);
+     meetingLocation = location;
+     completed = false;
+     setDuration("");
+    }
+    public meeting(){
+        eventName = null;
+        eventTime = null;
         endOfMeeting = null;
         meetingLocation = null;
         completed = false;
         lengthOfMeeting = 0;
     }
+
 }

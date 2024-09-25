@@ -3,6 +3,19 @@ package LOGIC;
 public class deadline extends event implements completable {
     boolean completed;
 
+    public deadline(String name, String startTime)
+    {
+        eventName = name;
+        eventTime = genDateTime(startTime);
+        completed = false;
+    }
+    deadline()
+    {
+      completed = false;
+      eventTime = null;
+      eventName = null;
+    }
+
     // ===== inherited methods
     // ----- getters
     public boolean isComplete() {return completed;}
