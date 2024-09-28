@@ -10,17 +10,8 @@ public class eventListPanel extends JPanel {
 
     ArrayList<event> listOfEvents;
     JPanel mainPanel;
-    JPanel eventControl;
-    JPanel display;
     JPanel fullLayoutPanel;
     int ci; // index of the last added event
-
-    JComboBox choseSort;
-    // a dropdown that sorts by name || date ||similar qualities in reverse order
-    // add listener for this comboBox as using a lambda function.
-    JCheckBox displayFilter;
-    // filters by whatever is checked
-    // - !! Add the listener for the filterDisplay as an anonymous class.
     JButton addEvent;
     // opens a modal (pop up window) that takes the event's input
 
@@ -67,27 +58,33 @@ public class eventListPanel extends JPanel {
     JPanel modalPanel;
     JComboBox<String> typeSelect;
     JLabel whatType;
-    void makeModalPanel()
-    {
-        modalPanel = new JPanel();
-        modalPanel.setLayout(new GridLayout(7,2));
+    JLabel objName;
+    JTextField objNameinp;
+    JLabel startDate;
+    JTextField startDateinp;
+    JLabel startTime;
+    JTextField startTimeinp;
+    JLabel endTime;
+    JTextField endTimeinp;
+    JLabel location;
+    JTextField locationinp;
+    JPanel submitButtonPanel;
+    JButton submitButton;
+    JDialog modal;
 
-        whatType = new JLabel("What type of event");
-        typeSelect = new JComboBox<>(new String[] {"meeting", "deadline"});
-        typeSelect.addActionListener(new typeSelectListen());
+    void makeModalPanel(String eventType)
+    {
+        modalPanel.removeAll();
 
         modalPanel.add(whatType);
         modalPanel.add(typeSelect);
+        objName = new JLabel("name of the obj name");
+        objNameinp = new JTextField();
 
-    }
-    void continueDeadline(){
-        JLabel objName = new JLabel("name of the obj name");
-        JTextField objNameinp = new JTextField();
-
-        JLabel startDate = new JLabel("Start date <mm/dd/yyyy>");
-        JTextField startDateinp = new JTextField();
-        JLabel startTime =  new JLabel("Start time <HH:mm[am/pm]>");
-        JTextField startTimeinp = new JTextField();
+        startDate = new JLabel("Start date <mm/dd/yyyy>");
+        startDateinp = new JTextField();
+        startTime =  new JLabel("Start time <HH:mm[am/pm]>");
+        startTimeinp = new JTextField();
 
         modalPanel.add(objName);
         modalPanel.add(objNameinp);
@@ -95,63 +92,113 @@ public class eventListPanel extends JPanel {
         modalPanel.add(startDateinp);
         modalPanel.add(startTime);
         modalPanel.add(startTimeinp);
+        if(eventType.equals("meeting"))
+        {
+             endTime =  new JLabel("End time <HH:mm[am/pm]>");
+             endTimeinp = new JTextField();
+
+             location = new JLabel("meeting Location");
+             locationinp = new JTextField();
+
+             modalPanel.add(endTime);
+             modalPanel.add(endTimeinp);
+             modalPanel.add(location);
+             modalPanel.add(locationinp);
+        }
+
+
+        modalPanel.revalidate();
+        modalPanel.repaint();
+
     }
-    void continueMeeting(){
-        continueDeadline();
-        JLabel endTime =  new JLabel("End time <HH:mm[am/pm]>");
-        JTextField endTimeinp = new JTextField();
 
-        JLabel location = new JLabel("meeting Location");
-        JTextField locationinp = new JTextField();
-
-        modalPanel.add(endTime);
-        modalPanel.add(endTimeinp);
-        modalPanel.add(location);
-        modalPanel.add(locationinp);
-
-    }
         void createModal()
     {
-        JDialog modal = new JDialog();
+        modal = new JDialog();
         modal.setModal(true);
         modal.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         modal.setPreferredSize(new Dimension(450, 400));
+        modal.setLayout(new BorderLayout());
 
-        makeModalPanel();
-        modal.add(modalPanel);
+        modalPanel = new JPanel();
+        modalPanel.setLayout(new GridLayout(7,2));
+
+        submitButtonPanel = new JPanel();
+        submitButtonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        submitButton = new JButton("Submit");
+        submitButton.setPreferredSize(new Dimension(150, 65));
+        submitButton.addActionListener(new submitButtonListener());
+        submitButtonPanel.add(submitButton);
+
+        whatType = new JLabel("What type of event");
+        typeSelect = new JComboBox<>(new String[] {"deadline", "meeting"});
+        typeSelect.addActionListener(typeSelectListener);
+
+        makeModalPanel("");
+
+
+        modal.add(modalPanel, BorderLayout.CENTER);
+        modal.add(submitButtonPanel, BorderLayout.SOUTH);
 
         modal.pack();
         modal.setVisible(true);
   }
 
     ActionListener addEventListener = new ActionListener() {
-        @Override
         public void actionPerformed(ActionEvent e) {
             createModal();
         }
     };
-    ActionListener submitButtonListener = new ActionListener() {
-        @Override
+    class submitButtonListener implements ActionListener{
         public void actionPerformed(ActionEvent e) {
 
+            String selectedType = (String) typeSelect.getSelectedItem();
+            String Name = objNameinp.getText();
+            String startDateTime = startDateinp.getText() + " " + startTimeinp.getText();
+
+
+            if(selectedType.equals("meeting"))
+            {
+                String endDateTime = startDateinp.getText() + " " + endTimeinp.getText();
+                String loc = locationinp.getText();
+                meeting addedMeeting = new meeting(Name, startDateTime, endDateTime, loc);
+                listOfEvents.add(addedMeeting);
+                ci++;
+                eventPanel nextEvent = new eventPanel(addedMeeting);
+                mainPanel.add(nextEvent.getDisplay());
+                mainPanel.repaint();
+                mainPanel.revalidate();
+                modal.dispose();
+
+            }else if(selectedType.equals("deadline"))
+            {
+                deadline addedDeadline = new deadline(Name, startDateTime);
+                listOfEvents.add(addedDeadline);
+                ci++;
+                eventPanel nextEvent = new eventPanel(addedDeadline);
+                mainPanel.add(nextEvent.getDisplay());
+                mainPanel.repaint();
+                mainPanel.revalidate();
+                modal.dispose();
+            }
+            else
+            {
+                JDialog errorBox = new JDialog();
+                errorBox.setModal(true);
+                errorBox.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                JPanel errorPanel = new JPanel();
+                errorPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+                JLabel errorMessage =  new JLabel(":: ERROR - values are missing ::");
+            }
         }
     };
-   private class typeSelectListen implements ActionListener{
+     ActionListener typeSelectListener = new ActionListener(){
         public void actionPerformed(ActionEvent e)
         {
             String selectedType = (String) typeSelect.getSelectedItem();
-            modalPanel.removeAll();
-            modalPanel.add(whatType);
-            modalPanel.add(typeSelect);
-            if(selectedType.equals("meeting"))
-            {
-                continueMeeting();
+            if (!selectedType.isBlank()) {
+                makeModalPanel(selectedType);
             }
-            else if(selectedType.equals("deadline"))
-            {
-                continueDeadline();
-            }
-
         }
 
     };

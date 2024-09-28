@@ -62,6 +62,7 @@ public class eventPanel extends JPanel {
         dispType.setEditable(false);
     }
 
+
     JPanel getDisplay(){
         display.setBorder(PanelBorder);
         return display;
